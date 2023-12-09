@@ -1,5 +1,5 @@
 #!bin/bash
-prefix="GM12878_Mhemi_rep123_CpG_dyad" #prefix of file name
+prefix="GM12878_Mhemi_rep123_CpG_dyad" #prefix of input file name
 E_CGNA=0.6 #cutting efficiency at CGNA
 E_CGNG=0.95 #cutting efficiency at CGNG
 E_PU=4 #purification efficiency at CGNG
