@@ -1,10 +1,11 @@
 #!bin/bash
-prefix="GM12878_Mhemi_rep123_CpG_dyad" #prefix of input file name
+#set input file and parameters
+prefix="GM12878_Mhemi_rep123_CpG_dyad.5000" #prefix of input file name
 E_CGNA=0.6 #cutting efficiency at CGNA
 E_CGNG=0.95 #cutting efficiency at CGNG
-E_PU=4 #purification efficiency at CGNG
+E_PU=0.25 #purification efficiency at CGNG
 #detemine the YNCGNR motif at each CpG
-bedtools intersect -a $prefix.bed -b hg38_YNCGNR.fa.bed -wo > $prefix.YNCGNR.bed
+bedtools intersect -a $prefix.bed -b hg38_YNCGNR.fa.1000.bed -wo > $prefix.YNCGNR.bed
 
 #normalize the count of unme, hemiW, hemiC, and me
 cutoff1=1
@@ -18,7 +19,7 @@ grep -i 'C[A,T,C,G]CG[A,T,C,G]G' $prefix.YNCGNR.bed | awk -v Ew=$Ew -v Ec=$Ec -v
         unme=$4;hw=$5;hc=$6;me=$7
         if($7!=0)
         {
-            me=($7/Ew/Ec*Ep);unme=0;hw=0;hc=0;
+            me=($7/Ew/Ec/Ep);unme=0;hw=0;hc=0;
             if($4>me*(1-Ew)*(1-Ec)) unme=($4-me*(1-Ew)*(1-Ec));
             if($5>me*Ew*(1-Ec)) hw=($5-me*Ew*(1-Ec));
             if($6>me*Ec*(1-Ew)) hc=($6-me*Ec*(1-Ew))
@@ -43,11 +44,11 @@ grep -i 'T[A,T,C,G]CG[A,T,C,G]G' $prefix.YNCGNR.bed | awk -v Ew=$Ew -v Ec=$Ec -v
     if(($4+$5+$6+$7)>2 && $2==($9+2))
     {
         unme=$4;hw=$5;hc=$6;me=$7
-        cutoff2=1*Ep/Ew/Ec
+        cutoff2=1/Ep/Ew/Ec
         if($7!=0)
         {
             unme=0;hw=0;hc=0;
-            me=($7/Ew/Ec*Ep);
+            me=($7/Ew/Ec/Ep);
             if($4>unme*(1-Ew)*(1-Ec)) unme=($4-me*(1-Ew)*(1-Ec)); if($5>me*Ew*(1-Ec)) hw=($5-me*Ew*(1-Ec)); if($6>me*Ec*(1-Ew)) hc=($6-me*Ec*(1-Ew))
         }
         else if($7==0 && $5!=0 && $5>=$6)
@@ -70,7 +71,7 @@ grep -i 'T[A,T,C,G]CG[A,T,C,G]G' $prefix.YNCGNR.bed | awk -v Ew=$Ew -v Ec=$Ec -v
             }
             else if($5<=cutoff2*Ew*(1-Ec) && $5>=cutoff1)
             {
-                me=($5-cutoff1)/Ew/(1-Ec)*Ep
+                me=($5-cutoff1)/Ew/(1-Ec)/Ep
                 hc=$6-cutoff2*Ec*(1-Ew)
                 unme=$4-me*(1-Ew)*(1-Ec)
                 hw=$5-cutoff2*Ew*(1-Ec)
@@ -110,11 +111,11 @@ grep -i 'C[A,T,C,G]CG[A,T,C,G]A' $prefix.YNCGNR.bed | awk -v Ew=$Ew -v Ec=$Ec -v
     if(($4+$5+$6+$7)>2 && $2==($9+2))
     {
         unme=$4;hw=$5;hc=$6;me=$7
-        cutoff2=1*Ep/Ew/Ec
+        cutoff2=1/Ep/Ew/Ec
         if($7!=0)
         {
             unme=0;hw=0;hc=0;
-            me=($7/Ew/Ec*Ep);
+            me=($7/Ew/Ec/Ep);
             if($4>unme*(1-Ew)*(1-Ec)) unme=($4-me*(1-Ew)*(1-Ec)); if($5>me*Ew*(1-Ec)) hw=($5-me*Ew*(1-Ec)); if($6>me*Ec*(1-Ew)) hc=($6-me*Ec*(1-Ew))
         }
         else if($7==0 && $6!=0 && $6>=$5)
@@ -137,7 +138,7 @@ grep -i 'C[A,T,C,G]CG[A,T,C,G]A' $prefix.YNCGNR.bed | awk -v Ew=$Ew -v Ec=$Ec -v
             }
             else if($6<=cutoff2*Ec*(1-Ew) && $6>=cutoff1)
             {
-                me=($6-cutoff1)/Ec/(1-Ew)*Ep
+                me=($6-cutoff1)/Ec/(1-Ew)/Ep
                 hc=cutoff1
                 unme=$4-me*(1-Ew)*(1-Ec)
                 hw=$5-cutoff2*Ew*(1-Ec)
@@ -181,12 +182,12 @@ grep -i 'T[A,T,C,G]CG[A,T,C,G]A' $prefix.YNCGNR.bed | awk -v Ew=$Ew -v Ec=$Ec -v
         if($7!=0)
         {
             unme=0;hw=0;hc=0;
-            me=($7/Ew/Ec*Ep);
+            me=($7/Ew/Ec/Ep);
             if($4>unme*(1-Ew)*(1-Ec)) unme=($4-me*(1-Ew)*(1-Ec)); if($5>me*Ew*(1-Ec)) hw=($5-me*Ew*(1-Ec)); if($6>me*Ec*(1-Ew)) hc=($6-me*Ec*(1-Ew))
         }
         else if($5!=0 || $6!=0)
         {
-            cutoff2=1/Ew/Ec*Ep
+            cutoff2=1/Ew/Ec/Ep
             unme=$4;hw=$5;hc=$6;
             if(unme>3*1/(1-Ew)/Ec*(1-Ew)*(1-Ec))
             {
@@ -236,7 +237,7 @@ grep -i 'T[A,T,C,G]CG[A,T,C,G]A' $prefix.YNCGNR.bed | awk -v Ew=$Ew -v Ec=$Ec -v
         }
         else
         {
-            cutoff2=1/Ew/Ec*Ep
+            cutoff2=1/Ew/Ec/Ep
             unme=$4;hw=$5;hc=$6;
             if(unme>3*1/Ew/(1-Ec)*(1-Ew)*(1-Ec))
             {
