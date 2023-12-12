@@ -6,7 +6,7 @@ We present a method named Mhemi-seq (MspJI-assisted hemi-methylation sequencing)
 GM12878_Mhemi_rep123_CpG_dyad.5000.bed
 ## The coordination of YNCGNR motifs in human hg38 reference genome
 hg38_YNCGNR.fa.1000.bed
-
+This File is part of the complete reference file.
 
 # Output file
 ## Normalized Mhemi-seq results
